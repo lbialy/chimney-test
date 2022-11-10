@@ -14,6 +14,11 @@ jobs:
       - name: Run benchmarks
         run: "cp benchmarks.json ${{ env.GITHUB_SHA }}.json" #TODO replace with sbt call
 
+      - name: Show GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
+
       - name: Fetch benchmarks metadata
         run: curl https://raw.githubusercontent.com/lbialy/chimney-test/main/meta.json -o meta.json
 
