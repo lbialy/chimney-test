@@ -12,12 +12,7 @@ jobs:
         uses: actions/checkout@v1
 
       - name: Run benchmarks
-        run: "cp benchmarks.json ${{ env.GITHUB_SHA }}.json" #TODO replace with sbt call
-
-      - name: Show GitHub context
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: echo "$GITHUB_CONTEXT"
+        run: "cp benchmarks.json ${{ github.sha }}.json" #TODO replace with sbt call
 
       - name: Fetch benchmarks metadata
         run: curl https://raw.githubusercontent.com/lbialy/chimney-test/main/meta.json -o meta.json
@@ -26,18 +21,18 @@ jobs:
         uses: actions/setup-node@v3
 
       - name: Process current benchmarks results
-        run: node process-benchmarks.mjs ${{ env.GITHUB_SHA }}.json ${{ env.GITHUB_SHA }}
+        run: node process-benchmarks.mjs ${{ github.sha }}.json ${{ github.sha }}
 
       - name: Push benchmark file
         uses: dmnemec/copy_file_to_another_repo_action@main
         env:
           API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
         with:
-          source_file: '${{ env.GITHUB_SHA }}.json'
+          source_file: '${{ github.sha }}.json'
           destination_repo: 'lbialy/chimney-test'
           user_email: 'lukasz.marcin.bialy@gmail.com'
           user_name: 'Łukasz Biały'
-          commit_message: 'Benchmarks for ${{ env.GITHUB_SHA }} added.'
+          commit_message: 'Benchmarks for ${{ github.sha }} added.'
 
       - name: Push meta file
         uses: dmnemec/copy_file_to_another_repo_action@main
@@ -48,6 +43,6 @@ jobs:
           destination_repo: 'lbialy/chimney-test'
           user_email: 'lukasz.marcin.bialy@gmail.com'
           user_name: 'Łukasz Biały'
-          commit_message: 'Meta update for ${{ env.GITHUB_SHA }}'
+          commit_message: 'Meta update for ${{ github.sha }}'
 
 
