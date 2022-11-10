@@ -15,7 +15,7 @@ jobs:
         run: "cp benchmarks.json ${{ env.GITHUB_SHA }}.json" #TODO replace with sbt call
 
       - name: Fetch benchmarks metadata
-        run: curl https://raw.githubusercontent.com/lbialy/chimney-test/main/meta.json -O meta.json
+        run: curl https://raw.githubusercontent.com/lbialy/chimney-test/main/meta.json -o meta.json
 
       - name: Get nope.js
         uses: actions/setup-node@v3
