@@ -17,8 +17,10 @@ jobs:
       - name: Fetch benchmarks metadata
         run: curl https://raw.githubusercontent.com/lbialy/chimney-test/main/meta.json -O meta.json
 
-      - name: Process current benchmarks results
+      - name: Get nope.js
         uses: actions/setup-node@v3
+
+      - name: Process current benchmarks results
         run: node process-benchmarks.mjs ${{ GITHUB_SHA }}.json ${{ GITHUB_SHA }}
 
       - name: Push benchmark file
