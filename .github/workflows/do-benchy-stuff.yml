@@ -1,0 +1,46 @@
+name: Do benchy stuff
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  bench:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Run benchmarks
+        run: "cp benchmarks.json ${{ GITHUB_SHA }}.json" #TODO replace with sbt call
+
+      - name: Fetch benchmarks metadata
+        run: curl https://raw.githubusercontent.com/lbialy/chimney-test/main/meta.json -O meta.json
+
+      - name: Process current benchmarks results
+        uses: actions/setup-node@v3
+        run: node process-benchmarks.mjs ${{ GITHUB_SHA }}.json ${{ GITHUB_SHA }}
+
+      - name: Push benchmark file
+        uses: dmnemec/copy_file_to_another_repo_action@main
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+        with:
+          source_file: '${{ GITHUB_SHA }}.json'
+          destination_repo: 'lbialy/chimney-test'
+          user_email: 'lukasz.marcin.bialy@gmail.com'
+          user_name: 'Łukasz Biały'
+          commit_message: 'Benchmarks for ${{ GITHUB_SHA }} added.'
+
+      - name: Push meta file
+        uses: dmnemec/copy_file_to_another_repo_action@main
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+        with:
+          source_file: 'meta.json'
+          destination_repo: 'lbialy/chimney-test'
+          user_email: 'lukasz.marcin.bialy@gmail.com'
+          user_name: 'Łukasz Biały'
+          commit_message: 'Meta update for ${{ GITHUB_SHA }}'
+
+
