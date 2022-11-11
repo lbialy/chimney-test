@@ -4,14 +4,13 @@ import { promises as fs } from 'node:fs'
 const metaFileName = 'meta.json'
 
 const githubContext = JSON.parse(argv[2])
-console.log(githubContext)
 const gitDescribe = argv[3]
 
 const metadata = JSON.parse(await fs.readFile(metaFileName, 'utf8'))
 
 const { compare, head_commit, event, event_name, ref } = githubContext
 
-delete head_commit['url']
+delete head_commit.url
 
 metadata.push({
     file: `${githubContext.sha}.json`,
