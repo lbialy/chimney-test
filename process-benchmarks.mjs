@@ -8,12 +8,8 @@ const gitDescribe = argv[3]
 
 const metadata = JSON.parse(await fs.readFile(metaFileName, 'utf8'))
 
-const { compare, head_commit, event, event_name, ref } = githubContext
-console.log('compare:', compare)
-console.log('head_commit:', head_commit)
-console.log('event:', event)
-console.log('event_name:', event_name)
-console.log('ref:', ref)
+const { event, event_name, ref } = githubContext
+const { head_commit, compare } = event
 
 delete head_commit.url
 
@@ -30,5 +26,7 @@ metadata.push({
 
 await fs.writeFile(metaFileName, JSON.stringify(metadata, null, 2))
 
-console.log(metadata)
+import { inspect } from 'node:util'
+
+console.log(inspect(metadata, {showHidden: false, depth: null, colors: true}))
 
