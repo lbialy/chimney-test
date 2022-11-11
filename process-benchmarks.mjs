@@ -7,8 +7,6 @@ const metaFileName = 'meta.json'
 const githubContext = JSON.parse(argv[2])
 const gitDescribe = argv[3]
 
-console.log(inspect(githubContext, {showHidden: false, depth: null, colors: true}))
-
 const metadata = JSON.parse(await fs.readFile(metaFileName, 'utf8'))
 
 const { event, event_name, ref } = githubContext
