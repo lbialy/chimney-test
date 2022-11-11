@@ -1,10 +1,13 @@
 import { argv } from 'node:process'
 import { promises as fs } from 'node:fs'
+import { inspect } from 'node:util'
 
 const metaFileName = 'meta.json'
 
 const githubContext = JSON.parse(argv[2])
 const gitDescribe = argv[3]
+
+console.log(inspect(githubContext, {showHidden: false, depth: null, colors: true}))
 
 const metadata = JSON.parse(await fs.readFile(metaFileName, 'utf8'))
 
@@ -25,8 +28,6 @@ metadata.push({
 })
 
 await fs.writeFile(metaFileName, JSON.stringify(metadata, null, 2))
-
-import { inspect } from 'node:util'
 
 console.log(inspect(metadata, {showHidden: false, depth: null, colors: true}))
 
