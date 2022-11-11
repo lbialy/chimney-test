@@ -3,9 +3,7 @@ import { promises as fs } from 'node:fs'
 
 const metaFileName = 'meta.json'
 
-console.log(argv)
-
-const githubContext = argv[2]
+const githubContext = JSON.parse(argv[2])
 const gitDescribe = argv[3]
 
 const metadata = JSON.parse(await fs.readFile(metaFileName, 'utf8'))
@@ -21,7 +19,8 @@ metadata.push({
     sha: event.after,
     eventName: event_name,
     ref,
-    commit: head_commit
+    commit: head_commit,
+    describe: gitDescribe
 })
 
 await fs.writeFile(metaFileName, JSON.stringify(metadata, null, 2))
