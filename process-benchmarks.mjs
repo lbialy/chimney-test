@@ -10,6 +10,9 @@ const gitDescribe = argv[3]
 const metadata = JSON.parse(await fs.readFile(metaFileName, 'utf8'))
 
 const { event, event_name, ref } = githubContext
+
+console.log(inspect(event, {showHidden: false, depth: null, colors: true}))
+
 const { head_commit, compare } = event
 
 delete head_commit.url
