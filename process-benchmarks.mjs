@@ -3,13 +3,25 @@ import { promises as fs } from 'node:fs'
 
 const metaFileName = 'meta.json'
 
-const pathToResultFile = argv[2]
-const commitSha = argv[3]
+console.log(argv)
+
+const githubContext = argv[2]
+const gitDescribe = argv[3]
 
 const metadata = JSON.parse(await fs.readFile(metaFileName, 'utf8'))
 
+const { compare, head_commit, event, event_name, ref } = githubContext
+
+delete head_commit['url']
+
 metadata.push({
-    file: `${commitSha}.json`
+    file: `${githubContext.sha}.json`,
+    compare,
+    prevCommit: event.before,
+    sha: event.after,
+    eventName: event_name,
+    ref,
+    commit: head_commit
 })
 
 await fs.writeFile(metaFileName, JSON.stringify(metadata, null, 2))

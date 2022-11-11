@@ -21,28 +21,28 @@ jobs:
         uses: actions/setup-node@v3
 
       - name: Process current benchmarks results
-        run: node process-benchmarks.mjs ${{ github.sha }}.json ${{ github.sha }}
+        run: node process-benchmarks.mjs '${{ toJson(github) }}' '$(git describe --tags --always)'
 
-      - name: Push benchmark file
-        uses: dmnemec/copy_file_to_another_repo_action@main
-        env:
-          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
-        with:
-          source_file: '${{ github.sha }}.json'
-          destination_repo: 'lbialy/chimney-test'
-          user_email: 'lukasz.marcin.bialy@gmail.com'
-          user_name: 'Łukasz Biały'
-          commit_message: 'Benchmarks for ${{ github.sha }} added.'
-
-      - name: Push meta file
-        uses: dmnemec/copy_file_to_another_repo_action@main
-        env:
-          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
-        with:
-          source_file: 'meta.json'
-          destination_repo: 'lbialy/chimney-test'
-          user_email: 'lukasz.marcin.bialy@gmail.com'
-          user_name: 'Łukasz Biały'
-          commit_message: 'Meta update for ${{ github.sha }}'
+#      - name: Push benchmark file
+#        uses: dmnemec/copy_file_to_another_repo_action@main
+#        env:
+#          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+#        with:
+#          source_file: '${{ github.sha }}.json'
+#          destination_repo: 'lbialy/chimney-test'
+#          user_email: 'lukasz.marcin.bialy@gmail.com'
+#          user_name: 'Łukasz Biały'
+#          commit_message: 'Benchmarks for ${{ github.sha }} added.'
+#
+#      - name: Push meta file
+#        uses: dmnemec/copy_file_to_another_repo_action@main
+#        env:
+#          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+#        with:
+#          source_file: 'meta.json'
+#          destination_repo: 'lbialy/chimney-test'
+#          user_email: 'lukasz.marcin.bialy@gmail.com'
+#          user_name: 'Łukasz Biały'
+#          commit_message: 'Meta update for ${{ github.sha }}'
 
 
