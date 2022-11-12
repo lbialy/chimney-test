@@ -32,21 +32,23 @@ if (githubContext.event_name === 'push') {
 
 if (githubContext.event_name === 'pull_request') {
     const { event, event_name, ref, head_ref } = githubContext
+    const { label, pull_request } = event
+
+    console.log(inspect(pull_request.base, {showHidden: false, depth: null, colors: true}))
 
     metadata.push({
         file: `${githubContext.sha}.json`,
         isPR: true,
-        prevCommit: event.before,
         sha: githubContext.sha,
         event: event_name,
         ref,
         sourceBranch: head_ref,
-        // commit: head_commit,
-        describe: gitDescribe
+        describe: gitDescribe,
+        label
     })
 
     await fs.writeFile(metaFileName, JSON.stringify(metadata, null, 2))
 }
 
-console.log(inspect(metadata, {showHidden: false, depth: null, colors: true}))
+// console.log(inspect(metadata, {showHidden: false, depth: null, colors: true}))
 
