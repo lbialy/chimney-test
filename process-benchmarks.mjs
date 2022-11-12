@@ -7,27 +7,46 @@ const metaFileName = 'meta.json'
 const githubContext = JSON.parse(argv[2])
 const gitDescribe = argv[3]
 
-console.log(inspect(githubContext, {showHidden: false, depth: null, colors: true}))
-
 const metadata = JSON.parse(await fs.readFile(metaFileName, 'utf8'))
 
-const { event, event_name, ref } = githubContext
-const { head_commit, compare } = event
+if (githubContext.event_name === 'push') {
+    const { event, event_name, ref } = githubContext
 
-delete head_commit.url
+    const { head_commit, compare } = event
 
-metadata.push({
-    file: `${githubContext.sha}.json`,
-    compare,
-    prevCommit: event.before,
-    sha: event.after,
-    eventName: event_name,
-    ref,
-    commit: head_commit,
-    describe: gitDescribe
-})
+    delete head_commit.url
 
-await fs.writeFile(metaFileName, JSON.stringify(metadata, null, 2))
+    metadata.push({
+        file: `${githubContext.sha}.json`,
+        compare,
+        prevCommit: event.before,
+        sha: event.after,
+        event: event_name,
+        ref,
+        commit: head_commit,
+        describe: gitDescribe
+    })
+
+    await fs.writeFile(metaFileName, JSON.stringify(metadata, null, 2))
+}
+
+if (githubContext.event_name === 'pull_request') {
+    const { event, event_name, ref, head_ref } = githubContext
+
+    metadata.push({
+        file: `${githubContext.sha}.json`,
+        isPR: true,
+        prevCommit: event.before,
+        sha: githubContext.sha,
+        event: event_name,
+        ref,
+        sourceBranch: head_ref,
+        commit: head_commit,
+        describe: gitDescribe
+    })
+
+    await fs.writeFile(metaFileName, JSON.stringify(metadata, null, 2))
+}
 
 console.log(inspect(metadata, {showHidden: false, depth: null, colors: true}))
 
