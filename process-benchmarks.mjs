@@ -18,13 +18,13 @@ if (githubContext.event_name === 'push') {
 
     metadata.push({
         file: `${githubContext.sha}.json`,
-        compare,
-        prevCommit: event.before,
         sha: event.after,
         event: event_name,
+        describe: gitDescribe,
         ref,
+        prevCommit: event.before,
         commit: head_commit,
-        describe: gitDescribe
+        compare,
     })
 
     await fs.writeFile(metaFileName, JSON.stringify(metadata, null, 2))
@@ -36,14 +36,13 @@ if (githubContext.event_name === 'pull_request') {
 
     metadata.push({
         file: `${githubContext.sha}.json`,
-        isPR: true,
         sha: githubContext.sha,
         event: event_name,
+        describe: gitDescribe,
         ref,
         sourceBranch: head_ref,
-        label,
+        label: label.name,
         prTitle: pull_request.title,
-        describe: gitDescribe,
     })
 
     await fs.writeFile(metaFileName, JSON.stringify(metadata, null, 2))
