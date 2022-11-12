@@ -41,7 +41,7 @@ if (githubContext.event_name === 'pull_request') {
         event: event_name,
         ref,
         sourceBranch: head_ref,
-        commit: head_commit,
+        // commit: head_commit,
         describe: gitDescribe
     })
 
