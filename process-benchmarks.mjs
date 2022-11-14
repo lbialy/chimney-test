@@ -35,7 +35,7 @@ if (githubContext.event_name === 'pull_request') {
     const { event, event_name, ref, head_ref } = githubContext
 
     if (event.action === 'labeled' && event.label.name === triggerLabel) { // only fire for labelling as 'benchmark'
-        const {label, pull_request} = event
+        const { label, pull_request } = event
 
         metadata.push({
             file: `${githubContext.sha}.json`,
@@ -50,15 +50,48 @@ if (githubContext.event_name === 'pull_request') {
     }
 
     if (event.action === 'synchronize') {
+        const { pull_request } = event
         console.log(inspect(githubContext, {showHidden: false, depth: null, colors: true}))
+
+        metadata.push({
+            file: `${githubContext.sha}.json`,
+            sha: githubContext.sha,
+            event: event_name,
+            describe: gitDescribe,
+            ref,
+            sourceBranch: head_ref,
+            prTitle: pull_request.title,
+        })
     }
 
     if (event.action === 'opened') {
+        const { pull_request } = event
         console.log(inspect(githubContext, {showHidden: false, depth: null, colors: true}))
+
+        metadata.push({
+            file: `${githubContext.sha}.json`,
+            sha: githubContext.sha,
+            event: event_name,
+            describe: gitDescribe,
+            ref,
+            sourceBranch: head_ref,
+            prTitle: pull_request.title,
+        })
     }
 
     if (event.action === 'reopened') {
+        const { pull_request } = event
         console.log(inspect(githubContext, {showHidden: false, depth: null, colors: true}))
+
+        metadata.push({
+            file: `${githubContext.sha}.json`,
+            sha: githubContext.sha,
+            event: event_name,
+            describe: gitDescribe,
+            ref,
+            sourceBranch: head_ref,
+            prTitle: pull_request.title,
+        })
     }
 
     await fs.writeFile(metaFileName, JSON.stringify(metadata, null, 2))
