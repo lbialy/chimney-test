@@ -10,6 +10,7 @@ on:
 jobs:
   bench:
     runs-on: ubuntu-latest
+    environment: 'benchmark'
     steps:
       - name: Check if should run benchmarks?
         run: echo "should_run=${{ github.event_name == 'push' || github.event.label.name == 'benchmark' || contains(github.event.pull_request.labels.*.name, 'benchmark') }}" >> $GITHUB_ENV
