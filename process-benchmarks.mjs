@@ -68,23 +68,6 @@ if (githubContext.event_name === 'pull_request') {
         await fs.writeFile(metaFileName, JSON.stringify(metadata, null, 2))
     }
 
-    if (event.action === 'opened') {
-        const { pull_request } = event
-        console.log(inspect(githubContext, {showHidden: false, depth: null, colors: true}))
-
-        metadata.push({
-            file: `${githubContext.sha}.json`,
-            sha: githubContext.sha,
-            event: event_name,
-            describe: gitDescribe,
-            ref,
-            sourceBranch: head_ref,
-            prTitle: pull_request.title,
-        })
-
-        await fs.writeFile(metaFileName, JSON.stringify(metadata, null, 2))
-    }
-
     if (event.action === 'reopened') {
         const { pull_request } = event
         console.log(inspect(githubContext, {showHidden: false, depth: null, colors: true}))
