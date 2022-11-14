@@ -15,16 +15,14 @@ if (githubContext.event_name === 'push') {
 
     const { head_commit, compare } = event
 
-    delete head_commit.url
-
     metadata.push({
         file: `${githubContext.sha}.json`,
         sha: event.after,
         event: event_name,
         describe: gitDescribe,
         ref,
+        author: head_commit.author.username,
         prevCommit: event.before,
-        commit: head_commit,
         compare,
     })
 
@@ -43,7 +41,8 @@ if (githubContext.event_name === 'pull_request') {
             event: event_name,
             describe: gitDescribe,
             ref,
-            sourceBranch: head_ref,
+            author: pull_request.head.user.login,
+            sourceBranch: pull_request.head.user.login + '/' + pull_request.head.repo.name + '/' pull_request.head.ref,
             label: label.name,
             prTitle: pull_request.title,
         })
@@ -61,24 +60,8 @@ if (githubContext.event_name === 'pull_request') {
             event: event_name,
             describe: gitDescribe,
             ref,
-            sourceBranch: head_ref,
-            prTitle: pull_request.title,
-        })
-
-        await fs.writeFile(metaFileName, JSON.stringify(metadata, null, 2))
-    }
-
-    if (event.action === 'reopened') {
-        const { pull_request } = event
-        console.log(inspect(githubContext, {showHidden: false, depth: null, colors: true}))
-
-        metadata.push({
-            file: `${githubContext.sha}.json`,
-            sha: githubContext.sha,
-            event: event_name,
-            describe: gitDescribe,
-            ref,
-            sourceBranch: head_ref,
+            author: pull_request.head.user.login,
+            sourceBranch: pull_request.head.user.login + '/' + pull_request.head.repo.name + '/' pull_request.head.ref,
             prTitle: pull_request.title,
         })
 
