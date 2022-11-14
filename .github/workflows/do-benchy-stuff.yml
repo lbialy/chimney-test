@@ -5,31 +5,43 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
-    types: [ labeled ]
+    types: [ 'labeled', 'opened', 'synchronize', 'reopened' ]
 
 jobs:
   bench:
     runs-on: ubuntu-latest
     steps:
+      - name: Check if should run benchmarks?
+        run: echo "should_run=${{ github.event_name == 'push' || github.event.label.name == 'benchmark' || contains(github.event.pull_request.labels.*.name, 'benchmark') }}" >> $GITHUB_ENV
+
+      - name: Debug
+        run: echo "${{ env.should_run }} | ${{ github.event_name }} | ${{ github.event.label.name }} | ${{ contains(github.event.pull_request.labels.*.name, 'benchmark') }}"
+
       - name: Checkout
         uses: actions/checkout@v1
+        if: ${{ env.should_run }}
 
       - name: Run benchmarks
         run: "cp benchmarks.json ${{ github.sha }}.json" #TODO replace with sbt call
+        if: ${{ env.should_run }}
 
       - name: Fetch benchmarks metadata
         run: curl https://raw.githubusercontent.com/lbialy/chimney-test/main/meta.json -o meta.json
+        if: ${{ env.should_run }}
 
       - name: Get nope.js
         uses: actions/setup-node@v3
+        if: ${{ env.should_run }}
 
       - name: Process current benchmarks results
         run: node process-benchmarks.mjs "$GITHUB_CONTEXT" "$(git describe --tags --always)"
+        if: ${{ env.should_run }}
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
 
 #      - name: Push benchmark file
 #        uses: dmnemec/copy_file_to_another_repo_action@main
+#        if: ${{ env.should_run }}
 #        env:
 #          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
 #        with:
@@ -41,6 +53,7 @@ jobs:
 #
 #      - name: Push meta file
 #        uses: dmnemec/copy_file_to_another_repo_action@main
+#        if: ${{ env.should_run }}
 #        env:
 #          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
 #        with:

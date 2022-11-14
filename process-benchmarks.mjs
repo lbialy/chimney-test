@@ -3,6 +3,7 @@ import { promises as fs } from 'node:fs'
 import { inspect } from 'node:util'
 
 const metaFileName = 'meta.json'
+const triggerLabel = 'benchmark'
 
 const githubContext = JSON.parse(argv[2])
 const gitDescribe = argv[3]
@@ -18,13 +19,13 @@ if (githubContext.event_name === 'push') {
 
     metadata.push({
         file: `${githubContext.sha}.json`,
-        compare,
-        prevCommit: event.before,
         sha: event.after,
         event: event_name,
+        describe: gitDescribe,
         ref,
+        prevCommit: event.before,
         commit: head_commit,
-        describe: gitDescribe
+        compare,
     })
 
     await fs.writeFile(metaFileName, JSON.stringify(metadata, null, 2))
@@ -33,17 +34,32 @@ if (githubContext.event_name === 'push') {
 if (githubContext.event_name === 'pull_request') {
     const { event, event_name, ref, head_ref } = githubContext
 
-    metadata.push({
-        file: `${githubContext.sha}.json`,
-        isPR: true,
-        prevCommit: event.before,
-        sha: githubContext.sha,
-        event: event_name,
-        ref,
-        sourceBranch: head_ref,
-        commit: head_commit,
-        describe: gitDescribe
-    })
+    if (event.action === 'labeled' && event.label.name === triggerLabel) { // only fire for labelling as 'benchmark'
+        const {label, pull_request} = event
+
+        metadata.push({
+            file: `${githubContext.sha}.json`,
+            sha: githubContext.sha,
+            event: event_name,
+            describe: gitDescribe,
+            ref,
+            sourceBranch: head_ref,
+            label: label.name,
+            prTitle: pull_request.title,
+        })
+    }
+
+    if (event.action === 'synchronize') {
+        console.log(inspect(githubContext, {showHidden: false, depth: null, colors: true}))
+    }
+
+    if (event.action === 'opened') {
+        console.log(inspect(githubContext, {showHidden: false, depth: null, colors: true}))
+    }
+
+    if (event.action === 'reopened') {
+        console.log(inspect(githubContext, {showHidden: false, depth: null, colors: true}))
+    }
 
     await fs.writeFile(metaFileName, JSON.stringify(metadata, null, 2))
 }
