@@ -47,6 +47,8 @@ if (githubContext.event_name === 'pull_request') {
             label: label.name,
             prTitle: pull_request.title,
         })
+
+        await fs.writeFile(metaFileName, JSON.stringify(metadata, null, 2))
     }
 
     if (event.action === 'synchronize') {
@@ -62,6 +64,8 @@ if (githubContext.event_name === 'pull_request') {
             sourceBranch: head_ref,
             prTitle: pull_request.title,
         })
+
+        await fs.writeFile(metaFileName, JSON.stringify(metadata, null, 2))
     }
 
     if (event.action === 'opened') {
@@ -77,6 +81,8 @@ if (githubContext.event_name === 'pull_request') {
             sourceBranch: head_ref,
             prTitle: pull_request.title,
         })
+
+        await fs.writeFile(metaFileName, JSON.stringify(metadata, null, 2))
     }
 
     if (event.action === 'reopened') {
@@ -92,9 +98,9 @@ if (githubContext.event_name === 'pull_request') {
             sourceBranch: head_ref,
             prTitle: pull_request.title,
         })
-    }
 
-    await fs.writeFile(metaFileName, JSON.stringify(metadata, null, 2))
+        await fs.writeFile(metaFileName, JSON.stringify(metadata, null, 2))
+    }
 }
 
 console.log(inspect(metadata, {showHidden: false, depth: null, colors: true}))
