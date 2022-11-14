@@ -30,7 +30,7 @@ if (githubContext.event_name === 'push') {
 }
 
 if (githubContext.event_name === 'pull_request') {
-    const { event, event_name, ref, head_ref } = githubContext
+    const { event, event_name, ref } = githubContext
 
     if (event.action === 'labeled' && event.label.name === triggerLabel) { // only fire for labelling as 'benchmark'
         const { label, pull_request } = event
@@ -42,7 +42,7 @@ if (githubContext.event_name === 'pull_request') {
             describe: gitDescribe,
             ref,
             author: pull_request.head.user.login,
-            sourceBranch: pull_request.head.user.login + '/' + pull_request.head.repo.name + '/' pull_request.head.ref,
+            sourceBranch: pull_request.head.user.login + '/' + pull_request.head.repo.name + '/' + pull_request.head.ref,
             label: label.name,
             prTitle: pull_request.title,
         })
@@ -61,7 +61,7 @@ if (githubContext.event_name === 'pull_request') {
             describe: gitDescribe,
             ref,
             author: pull_request.head.user.login,
-            sourceBranch: pull_request.head.user.login + '/' + pull_request.head.repo.name + '/' pull_request.head.ref,
+            sourceBranch: pull_request.head.user.login + '/' + pull_request.head.repo.name + '/' + pull_request.head.ref,
             prTitle: pull_request.title,
         })
 
