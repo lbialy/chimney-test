@@ -15,7 +15,7 @@ jobs:
       - name: Check if should run benchmarks?
         run: echo "should_run=${{ github.event_name == 'push' || github.event.label.name == 'benchmark' || contains(github.event.pull_request.labels.*.name, 'benchmark') }}" >> $GITHUB_ENV
 
-      - name: Debug
+      - name: Debug # TODO drop
         run: echo "${{ env.should_run }} | ${{ github.event_name }} | ${{ github.event.label.name }} | ${{ contains(github.event.pull_request.labels.*.name, 'benchmark') }}"
 
       - name: Checkout
