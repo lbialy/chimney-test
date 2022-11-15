@@ -40,6 +40,7 @@ jobs:
           mkdir -p ./results
           mv meta.json ./results
           mv ${{ github.sha }}.json ./results
+          echo "${{ github.sha }}" > ./results/sha
 
       - name: Upload benchmark results
         uses: actions/upload-artifact@v2

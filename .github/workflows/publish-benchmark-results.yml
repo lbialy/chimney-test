@@ -36,12 +36,17 @@ jobs:
 
       - run: ls -hal # TODO drop debug
 
+      - name: Set SHA
+        run: |
+          SHA=$(cat sha)
+          echo "SHA=$SHA" >> $GITHUB_ENV
+
       - name: Push benchmark file
         uses: dmnemec/copy_file_to_another_repo_action@main
         env:
           API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
         with:
-          source_file: '${{ github.sha }}.json'
+          source_file: '${{ env.SHA }}.json'
           destination_repo: 'lbialy/chimney-test-data'
           user_email: 'lukasz.marcin.bialy@gmail.com'
           user_name: 'Łukasz Biały'
