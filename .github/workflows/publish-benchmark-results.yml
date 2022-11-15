@@ -1,0 +1,36 @@
+name: Publish benchmark results
+
+on:
+  workflow_run:
+    workflows: ["Run benchmarks"]
+    types:
+      - completed
+
+concurrency: 'benchmark'
+
+jobs:
+  push-to-data-repo:
+    runs-on: ubuntu-latest
+    if: github.event.workflow_run.conclusion == 'success'
+    steps:
+      - name: Push benchmark file
+        uses: dmnemec/copy_file_to_another_repo_action@main
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+        with:
+          source_file: '${{ github.sha }}.json'
+          destination_repo: 'lbialy/chimney-test-data'
+          user_email: 'lukasz.marcin.bialy@gmail.com'
+          user_name: 'Łukasz Biały'
+          commit_message: 'Benchmarks for ${{ github.sha }} added.'
+
+      - name: Push meta file
+        uses: dmnemec/copy_file_to_another_repo_action@main
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+        with:
+          source_file: 'meta.json'
+          destination_repo: 'lbialy/chimney-test-data'
+          user_email: 'lukasz.marcin.bialy@gmail.com'
+          user_name: 'Łukasz Biały'
+          commit_message: 'Meta update for ${{ github.sha }}'
