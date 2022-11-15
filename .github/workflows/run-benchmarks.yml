@@ -1,0 +1,38 @@
+name: Run benchmarks
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+    types: [ 'labeled', 'synchronize' ]
+
+concurrency: 'benchmark'
+
+jobs:
+  bench:
+    runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'push' || 
+      github.event.label.name == 'benchmark' || 
+      contains(github.event.pull_request.labels.*.name, 'benchmark')
+    environment: 'benchmark'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Run benchmarks
+        run: "cp benchmarks.json ${{ github.sha }}.json" #TODO replace with sbt call
+
+      - name: Fetch benchmarks metadata
+        run: curl https://raw.githubusercontent.com/lbialy/chimney-test-data/main/meta.json -o meta.json
+
+      - name: Get nope.js
+        uses: actions/setup-node@v3
+
+      - name: Process current benchmarks results
+        run: node process-benchmarks.mjs "$GITHUB_CONTEXT" "$(git describe --tags --always)"
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+
+
