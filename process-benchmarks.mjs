@@ -15,59 +15,70 @@ if (githubContext.event_name === 'push') {
 
     const { head_commit, compare } = event
 
-    metadata.push({
+    const entry = {
         file: `${githubContext.sha}.json`,
         sha: event.after,
         event: event_name,
         describe: gitDescribe,
         ref,
         author: head_commit.author.username,
+        link: compare,
         prevCommit: event.before,
-        compare,
-    })
+    }
+
+    metadata.push(entry)
 
     await fs.writeFile(metaFileName, JSON.stringify(metadata, null, 2))
+
+    console.log('added entry to metadata:', inspect(entry, {showHidden: false, depth: null, colors: true}))
 }
 
 if (githubContext.event_name === 'pull_request') {
     const { event, event_name, ref } = githubContext
 
-    if (event.action === 'labeled' && event.label.name === triggerLabel) { // only fire for labelling as 'benchmark'
+    if (event.action === 'labeled' && event.label.name === triggerLabel) { // fire for labelling as 'benchmark'
         const { label, pull_request } = event
 
-        metadata.push({
+        const entry = {
             file: `${githubContext.sha}.json`,
             sha: githubContext.sha,
             event: event_name,
             describe: gitDescribe,
             ref,
             author: pull_request.head.user.login,
+            link: pull_request._links.html.href,
             sourceBranch: pull_request.head.user.login + '/' + pull_request.head.repo.name + '/' + pull_request.head.ref,
             label: label.name,
             prTitle: pull_request.title,
-        })
+        }
+
+        metadata.push(entry)
 
         await fs.writeFile(metaFileName, JSON.stringify(metadata, null, 2))
+
+        console.log('added entry to metadata:', inspect(entry, {showHidden: false, depth: null, colors: true}))
     }
 
     if (event.action === 'synchronize') {
         const { pull_request } = event
-        console.log(inspect(githubContext, {showHidden: false, depth: null, colors: true}))
 
-        metadata.push({
+        const entry = {
             file: `${githubContext.sha}.json`,
             sha: githubContext.sha,
             event: event_name,
             describe: gitDescribe,
             ref,
             author: pull_request.head.user.login,
+            link: pull_request._links.html.href,
             sourceBranch: pull_request.head.user.login + '/' + pull_request.head.repo.name + '/' + pull_request.head.ref,
             prTitle: pull_request.title,
-        })
+        }
+
+        metadata.push(entry)
 
         await fs.writeFile(metaFileName, JSON.stringify(metadata, null, 2))
+
+        console.log('added entry to metadata:', inspect(entry, {showHidden: false, depth: null, colors: true}))
     }
 }
-
-console.log(inspect(metadata, {showHidden: false, depth: null, colors: true}))
 

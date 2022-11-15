@@ -27,7 +27,7 @@ jobs:
         if: ${{ env.should_run }}
 
       - name: Fetch benchmarks metadata
-        run: curl https://raw.githubusercontent.com/lbialy/chimney-test/main/meta.json -o meta.json
+        run: curl https://raw.githubusercontent.com/lbialy/chimney-test-data/main/meta.json -o meta.json
         if: ${{ env.should_run }}
 
       - name: Get nope.js
@@ -40,28 +40,28 @@ jobs:
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
 
-#      - name: Push benchmark file
-#        uses: dmnemec/copy_file_to_another_repo_action@main
-#        if: ${{ env.should_run }}
-#        env:
-#          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
-#        with:
-#          source_file: '${{ github.sha }}.json'
-#          destination_repo: 'lbialy/chimney-test'
-#          user_email: 'lukasz.marcin.bialy@gmail.com'
-#          user_name: 'Łukasz Biały'
-#          commit_message: 'Benchmarks for ${{ github.sha }} added.'
-#
-#      - name: Push meta file
-#        uses: dmnemec/copy_file_to_another_repo_action@main
-#        if: ${{ env.should_run }}
-#        env:
-#          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
-#        with:
-#          source_file: 'meta.json'
-#          destination_repo: 'lbialy/chimney-test'
-#          user_email: 'lukasz.marcin.bialy@gmail.com'
-#          user_name: 'Łukasz Biały'
-#          commit_message: 'Meta update for ${{ github.sha }}'
+      - name: Push benchmark file
+        uses: dmnemec/copy_file_to_another_repo_action@main
+        if: ${{ env.should_run }}
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+        with:
+          source_file: '${{ github.sha }}.json'
+          destination_repo: 'lbialy/chimney-test-data'
+          user_email: 'lukasz.marcin.bialy@gmail.com'
+          user_name: 'Łukasz Biały'
+          commit_message: 'Benchmarks for ${{ github.sha }} added.'
+
+      - name: Push meta file
+        uses: dmnemec/copy_file_to_another_repo_action@main
+        if: ${{ env.should_run }}
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+        with:
+          source_file: 'meta.json'
+          destination_repo: 'lbialy/chimney-test-data'
+          user_email: 'lukasz.marcin.bialy@gmail.com'
+          user_name: 'Łukasz Biały'
+          commit_message: 'Meta update for ${{ github.sha }}'
 
 
