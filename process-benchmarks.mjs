@@ -23,6 +23,7 @@ if (githubContext.event_name === 'push') {
         ref,
         author: head_commit.author.username,
         link: compare,
+        timestamp: head_commit.timestamp,
         prevCommit: event.before,
     }
 
@@ -47,6 +48,8 @@ if (githubContext.event_name === 'pull_request') {
             ref,
             author: pull_request.head.user.login,
             link: pull_request._links.html.href,
+            timestamp: pull_request.updated_at,
+            prNumber: event.number,
             sourceBranch: pull_request.head.user.login + '/' + pull_request.head.repo.name + '/' + pull_request.head.ref,
             label: label.name,
             prTitle: pull_request.title,
@@ -70,6 +73,8 @@ if (githubContext.event_name === 'pull_request') {
             ref,
             author: pull_request.head.user.login,
             link: pull_request._links.html.href,
+            timestamp: pull_request.updated_at,
+            prNumber: event.number,
             sourceBranch: pull_request.head.user.login + '/' + pull_request.head.repo.name + '/' + pull_request.head.ref,
             prTitle: pull_request.title,
         }
