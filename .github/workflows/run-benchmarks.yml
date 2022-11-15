@@ -35,4 +35,16 @@ jobs:
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
 
+      - name: Save benchmark results
+        run: |
+          mkdir -p ./results
+          mv meta.json ./results
+          mv ${{ github.sha }}.json ./results
+
+      - name: Upload benchmark results
+        uses: actions/upload-artifact@v2
+        with:
+          name: benchmark-results
+          path: results
+
 
